@@ -1,96 +1,128 @@
-// let nameInput = document.getElementById("name");
-// let userNameInput = document.getElementById("userName");
-// let emailInput = document.getElementById("userEmail");
-// let addressInput = document.getElementById("userAddress");
-// let phoneInput = document.getElementById("userPhone");
-// let websiteInput = document.getElementById("userWebsite");
-// let companyInput = document.getElementById("userCompany");
+let userList = document.getElementById("userList");
+let form = document.getElementById("form-body")
 
-// let userList = document.getElementById("userList");
+class User {
+    constructor(name, userName, email, address, phone, website, company) {
+        this.name = name;
+        this.userName = userName;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+        this.website = website;
+        this.company = company;
+    }
+}
 
-// let url = "https://jsonplaceholder.typicode.com/users";
+class CreateUser {
+    constructor() {
+        this.users = this.loadUsers();
+        this.editIndex = null; // Track the index of the user being edited
+        this.showUsers();
+    }
+
+    loadUsers() {
+        let usersData = localStorage.getItem("users");
+        return usersData ? JSON.parse(usersData) : [];
+    }
+
+    setUsers() {
+        localStorage.setItem('users', JSON.stringify(this.users));
+    }
+
+    addUser(user) {
+        this.users.push(user);
+        this.setUsers();
+        this.showUsers();
+    }
+
+    updateUser(index, user) {
+        this.users[index] = user;
+        this.setUsers();
+        this.showUsers();
+        this.editIndex = null; // Reset edit index after updating
+    }
+
+    deleteUser(index) {
+        this.users.splice(index, 1);
+        this.setUsers();
+        this.showUsers();
+    }
+
+    showUsers() {
+        userList.innerHTML = ''; // Clear existing entries
+        this.users.forEach((user, index) => {
+            userList.innerHTML += `
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.userName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.address}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.website}</td>
+                    <td>${user.company}</td>
+                    <td>
+                        <i onclick="usersInstance.editUser(${index})" class="fa-solid fa-pen-to-square text-white bg-success p-2 rounded-2"></i>
+                        <i onclick="usersInstance.deleteUser(${index})" class="fa-solid fa-trash text-white bg-danger p-2 rounded-2"></i>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    editUser(index) {
+        modalOpen()
+        let user = this.users[index];
+        document.getElementById("name").value = user.name;
+        document.getElementById("userName").value = user.userName;
+        document.getElementById("userEmail").value = user.email;
+        document.getElementById("userAddress").value = user.address;
+        document.getElementById("userPhone").value = user.phone;
+        document.getElementById("userWebsite").value = user.website;
+        document.getElementById("userCompany").value = user.company;
+
+        this.editIndex = index; // Set the index for editing
+    }
+}
+// users object
+const usersInstance = new CreateUser();
+
+// modal open
+function modalOpen(){
+    document.getElementById("modal").style.display = "block"
+
+}
+//modal close
+function closeModal() {
+    document.getElementById("modal").style.display = "none"
+}
+
+// user create
+function createUser() {
+    let name = document.getElementById("name").value;
+    let userName = document.getElementById("userName").value;
+    let email = document.getElementById("userEmail").value;
+    let address = document.getElementById("userAddress").value;
+    let phone = document.getElementById("userPhone").value;
+    let website = document.getElementById("userWebsite").value;
+    let company = document.getElementById("userCompany").value;
+
+    // New user creation
+    const newUser = new User(name, userName, email, address, phone, website, company);
+
+    if (usersInstance.editIndex !== null) {
+        usersInstance.updateUser(usersInstance.editIndex, newUser);
+        usersInstance.editIndex = null; // Reset edit index after update
+    } else {
+        usersInstance.addUser(newUser);
+    }
+
+    // reset form data
+    form.reset()
+
+    // modal close
+    document.getElementById("modal").style.display = "none"
 
 
-// async function createUser(){
-
-//     let data = {
-//         name: nameInput.value,
-//         username: userNameInput.value,
-//         email: emailInput.value,
-//         address: {
-//           city: addressInput.value,
-//         },
-//         phone: phoneInput.value,
-//         website: websiteInput.value,
-//         company: {
-//           name: companyInput.value,
-//         },
-//     };
-
-//     let res = await axios.post(url,data)
-    
-//     if(res.status === 200){
-        
-//     }else{
-//         alert("Something went wrong")
-//     }
-
-// }
 
 
 
-
-
-// getData()
-
-
-
-
-
-
-
-
-
-// // get user list from backend
-// async function getData() {
-
-//   let res = await axios.get(url);
-  
-//   if (res.status === 200) {
-//     let users = res.data
-//     console.log(users)
-//     users.map((user)=>{
-//         userList.innerHTML +=`<tr>
-
-//             <td>${user.name}</td>
-//             <td>${user.username}</td>
-//             <td>${user.email}</td>
-//             <td>${user.address.city}</td>
-//             <td>${user.phone}</td>
-//             <td>${user.website}</td>
-//             <td>${user.company.name}</td>
-//             <td>
-//             <i onclick="userUpdate('${user.id}')" class="fa-solid fa-pen-to-square text-white bg-success p-2 rounded-2"></i>
-//             <i onclick="userDelete('${user.id}')" class="fa-solid fa-trash text-white bg-danger p-2 rounded-2"></i>
-//             </td>
-//         </tr>`
-//     })
-    
-//   }
-// }
-
-
-
-// async function userDelete(id){
-    
-//     let res = await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`)
-//     if (res.status === 200){
-//         userList.innerHTML = '';
-        
-//     }else{
-//         alert('Something went wrong')
-//     }
-    
-
-// }
-
+}
