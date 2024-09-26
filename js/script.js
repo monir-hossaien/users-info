@@ -16,7 +16,7 @@ class User {
 class CreateUser {
     constructor() {
         this.users = this.loadUsers();
-        this.editIndex = null; // Track the index of the user being edited
+        this.editIndex = null;
         this.showUsers();
     }
 
@@ -39,7 +39,7 @@ class CreateUser {
         this.users[index] = user;
         this.setUsers();
         this.showUsers();
-        this.editIndex = null; // Reset edit index after updating
+        this.editIndex = null;
     }
 
     deleteUser(index) {
@@ -49,7 +49,7 @@ class CreateUser {
     }
 
     showUsers() {
-        userList.innerHTML = ''; // Clear existing entries
+        userList.innerHTML = '';
         this.users.forEach((user, index) => {
             userList.innerHTML += `
                 <tr>
